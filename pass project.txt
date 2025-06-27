@@ -1,0 +1,70 @@
+import re
+import math
+
+def check_length(password):
+    return len(password) >= 8
+
+def check_character_variety(password):
+    has_upper = re.search(r'[A-Z]', password) is not None
+    has_lower = re.search(r'[a-z]', password) is not None
+    has_digit = re.search(r'\d', password) is not None
+    has_special = re.search(r'[!@#$%^&*(),.?":{}|<>]', password) is not None
+    return has_upper, has_lower, has_digit, has_special
+
+def check_common_passwords(password):
+    common_passwords = {"password", "123456", "123456789", "qwerty", "abc123", "letmein"}
+    return password.lower() in common_passwords
+
+def calculate_entropy(password):
+    charset_size = 0
+    if re.search(r'[A-Z]', password):
+        charset_size += 26
+    if re.search(r'[a-z]', password):
+        charset_size += 26
+    if re.search(r'\d', password):
+        charset_size += 10
+    if re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        charset_size += 32
+    if charset_size == 0:
+        return 0
+    entropy = len(password) * math.log2(charset_size)
+    return entropy
+
+def analyze_password(password):
+    if not check_length(password):
+        return "❌ Password is too short. It must be at least 8 characters long."
+    
+    has_upper, has_lower, has_digit, has_special = check_character_variety(password)
+    
+    missing = []
+    if not has_upper:
+        missing.append("uppercase letter")
+    if not has_lower:
+        missing.append("lowercase letter")
+    if not has_digit:
+        missing.append("digit")
+    if not has_special:
+        missing.append("special character")
+    
+    if missing:
+        return f"❌ Password is missing: {', '.join(missing)}."
+    
+    if check_common_passwords(password):
+        return "❌ Password is too common. Please choose a more secure password."
+    
+    entropy = calculate_entropy(password)
+    
+    # Rating by entropy
+    if entropy < 40:
+        strength = "Weak"
+    elif entropy < 60:
+        strength = "Moderate"
+    else:
+        strength = "Strong"
+    
+    return f"✅ Password is {strength}. Entropy: {entropy:.2f} bits."
+
+# Run the analyzer
+password = input("Enter a password to analyze: ")
+result = analyze_password(password)
+print(result)
