@@ -32,7 +32,7 @@ def calculate_entropy(password):
 
 def analyze_password(password):
     if not check_length(password):
-        return "❌ Password is too short. It must be at least 8 characters long."
+        return " Password is too short. It must be at least 8 characters long."
     
     has_upper, has_lower, has_digit, has_special = check_character_variety(password)
     
@@ -47,10 +47,10 @@ def analyze_password(password):
         missing.append("special character")
     
     if missing:
-        return f"❌ Password is missing: {', '.join(missing)}."
+        return f" Password is missing: {', '.join(missing)}."
     
     if check_common_passwords(password):
-        return "❌ Password is too common. Please choose a more secure password."
+        return " Password is too common. Please choose a more secure password."
     
     entropy = calculate_entropy(password)
     
@@ -62,7 +62,7 @@ def analyze_password(password):
     else:
         strength = "Strong"
     
-    return f"✅ Password is {strength}. Entropy: {entropy:.2f} bits."
+    return f" Password is {strength}. Entropy: {entropy:.2f} bits."
 
 # Run the analyzer
 password = input("Enter a password to analyze: ")
